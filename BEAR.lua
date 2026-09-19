@@ -1,1 +1,62 @@
-return(function(...) local _4b,_3g=string.gsub,string.sub local _1r,_5g,_3t=loadstring,bit32.band,pcall local _0h,_5h=string.byte,table.concat local _1b,_2f,_5q=string.pack,bit32.bxor,assert local _3v,_1h=type,string.char local _4h={(99+145),(17+84),(8*5+0),(176+26),(2*4+1),(7*35+0-16),(29+104),(128-75)} local function _0c(data) local _0r={} for _0i=#data,1,-1 do _0r[#data-_0i+1]=_1h(_2f(_0h(data,_0i),69)) end return _5h(_0r) end local _5a={(200-137),(12*7+3-34),(53+314-271),(11*21+0-4),(456+14-242),(145+189-317),(616-413),(8*4+5),(84+33),(281-200),(292-176),(218-194),(185+7),(227-215),(366-126),(288-173),(9*26+2-13),(224-67),(774-584),(2*96+1),(187-180),(4*28-18),(506-280),(494-280),(9*26+4),(30-3),(4*41-55),(171+44-155),(4*21+1),(9*18+7),(34+23),(8*28-86),(198+219-207),(736-583),(8*24+7-18),(2*125+1),(3*81-52),(313-177),(598-387),(711-572),(195-191),(7*34-41),(262+374-517),(4*70+0-31),(224-213),(7*24+6),(74+5),(369-296),(589-443),(72+79),(588-484),(6*17+3),(288-200),(5*25-60),(8*29+7-22),(149+258-235),(505-503),(178-60),(463-243),(692-585),(172+46),(9*20-114),(615-574),(17+9),(50+517-445),(5*6+1),(442-279),(6*34+2-36),(335-205),(579-375),(243-200),(700-557),(273-237),(63+493-526),(5*9-36),(142+74),(319-245),(10*8+9-47),(5*15+0-50),(8*30-5)} local function _4j(data) local _0r={} for _0i=#data,1,-1 do _0r[#data-_0i+1]=_1h(_2f(_0h(data,_0i),99)) end return _5h(_0r) end local function _0v(data) local _0t={} local _0a=152 for _0i=1,#data do _0t[_0i]=_1h(_2f(_0h(data,_0i),_5g(_0a,0xFF)));_0a=_0a+28 end return _5h(_0t) end local _5b={(364-273),(4*34-38),(301+254-515),(12*16+4-49),(307-170),(750-575),(36+152),(5*45-97),(454-295),(611-490),(309+0-125),(5*33-59),(8*4+1),(13+113),(12*8+4),(336-322),(79+83),(594-394),(8*2+0-6),(169-118),(12*8+3-10),(493-286),(7*5-17),(431-341),(6*44-19),(297-200),(12*8+5),(11*19+0),(255-76),(3*31+1-18),(348-115),(459-311),(7*25-9),(5*58-37),(22+6),(8*7+2-9)} local function _4c(data) local _0r={} for _0i=#data,1,-1 do _0r[#data-_0i+1]=_1h(_2f(_0h(data,_0i),166)) end return _5h(_0r) end local _2n={(5*42+1),(7*16+0-9),(62-53),(107+54),(6*37+1-34),(602-524)} local fu
+if not game:IsLoaded() then game.Loaded:Wait() end
+
+local BASE = 'https://raw.githubusercontent.com/BEARHUB-DEV/BEARHUB/main/'
+
+local games = {
+    [4789047554] = 'prisonescapev2.lua',
+    [126016859830524] = 'StealAEggBrainrot.lua',
+    [128168754563448] = 'SwatSimulator.lua',
+}
+
+if identifyexecutor then
+    local execName = tostring(identifyexecutor()):lower()
+    local UNSUPPORTED = { "Solara", "Xeno" }
+    
+    for _, name in ipairs(UNSUPPORTED) do
+        if execName:find(name:lower(), 1, true) then
+            local ok, Library = pcall(function() 
+                return loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/ObsidianUltra/main/Library.lua"))() 
+            end)
+            if ok and Library then
+                Library:CreateUnsupportedScreen({
+                    Title = "BEAR HUB",
+                    Unsupported = UNSUPPORTED,
+                    Footer = {
+                        { Text = "Unsupported Executor Detected", Copyable = false }
+                    },
+                })
+            end
+            return
+        end
+    end
+end
+
+local file = games[game.CreatorId] or games[game.PlaceId]
+
+if file then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "BEAR HUB",
+        Text = "Supported games! loading...",
+        Duration = 5
+    })
+    
+    task.wait(math.random())
+    
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(BASE .. file)
+    end)
+    
+    if success and scriptContent and not scriptContent:find("404: Not Found") then
+        local loadedFunc, err = loadstring(scriptContent)
+        if loadedFunc then
+            task.spawn(loadedFunc)
+            print("[BEAR HUB] Successfully executed: " .. file)
+        else
+            warn("[BEAR HUB] Syntax error in script: " .. tostring(err))
+        end
+    else
+        warn("[BEAR HUB] Failed to fetch script from URL: " .. BASE .. file)
+    end
+else
+    print("[BEAR HUB] Current game is not supported.")
+end
