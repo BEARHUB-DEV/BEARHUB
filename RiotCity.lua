@@ -1,7 +1,17 @@
--- yang nyolong gabisa punya keturunan
-local Library = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/aboutsibah113/Library/refs/heads/main/Sibah2xZcu_Library.lua?v=2"
+-- yang nyolong ga punya kelamin & keturunan
+local WindUI = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
 ))()
+
+local Window = WindUI:CreateWindow({
+    Title = "Prison Escape V2",
+    Icon = "rbxassetid://139365761909290",
+    Theme = "Dark",
+    Author = "Bear Hub",
+    Folder = "PrisonEscapeV2",
+    Transparent = true,
+    KeySystem = false,
+})
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -16,43 +26,30 @@ local CoreGui = game:GetService("CoreGui")
 local Camera = Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
-local Window = Library:CreateWindow({
-    Title          = "Bear Hub",
-    Description    = "v2.1 Pro Optimized",
-    isVerified     = true,
-    OpenCloseImage = "92530824918913",
-    Icon           = "rbxthumb://type=Asset&id=139365761909290&w=420&h=420",
-    Keybind        = Enum.KeyCode.RightControl,
-    SizeUi         = UDim2.fromOffset(500, 340),
-    Tags           = { "Beta", "OP" },
+WindUI:Notify({
+    Title = "Prison Escape V2",
+    Content = "Script successfully loaded!",
+    Duration = 4,
 })
 
-Window:SetColor(Color3.fromRGB(88, 166, 255))
+local MainTab = Window:Tab({ Title = "Main", Icon = "settings" })
+local TeleportsTab = Window:Tab({ Title = "Teleports", Icon = "map-pin" })
+local PlayerTab = Window:Tab({ Title = "Player", Icon = "user" })
+local VisualTab = Window:Tab({ Title = "Visual", Icon = "eye" })
+local InteractTab = Window:Tab({ Title = "Interact", Icon = "hand" })
+local AimbotTab = Window:Tab({ Title = "Aimbot", Icon = "crosshair" })
+local UtilityTab = Window:Tab({ Title = "Utility", Icon = "cpu" })
+local AutoFarmTab = Window:Tab({ Title = "Auto Farm", Icon = "dollar-sign" })
 
 local DisableNotify = false
-local oldNotify = Window.Notify
-Window.Notify = function(self, text, duration)
-    if not DisableNotify then
-        oldNotify(self, text, duration)
-    end
-end
-
-Window:Notify("Bear Hub v2.1 Loaded!", 4)
-
-local MainTab       = Window:CreateTab({ "Main", "" })
-local MainSection   = MainTab:AddSection("Settings", true)
-
-MainSection:AddToggle({
-    Title    = "Disable Notify",
-    Content  = "Disables all custom script notifications",
-    Default  = false,
+MainTab:Toggle({
+    Title = "Disable Notify",
+    Description = "Disables all custom script notifications",
+    Default = false,
     Callback = function(Value)
         DisableNotify = Value
     end,
 })
-
-local TeleportsTab = Window:CreateTab({ "Teleports", "" })
-local TeleportsSection = TeleportsTab:AddSection("Location Teleports", true)
 
 local function teleportTo(targetName)
     local character = LocalPlayer.Character
@@ -70,50 +67,53 @@ local function teleportTo(targetName)
             
             if pos then
                 character:PivotTo(CFrame.new(pos + Vector3.new(0, 3, 0)))
-                Window:Notify("Teleported to " .. targetName, 2)
+                if not DisableNotify then
+                    WindUI:Notify({ Title = "Teleport", Content = "Teleported to " .. targetName, Duration = 2 })
+                end
             else
-                Window:Notify("Could not determine position for " .. targetName, 3)
+                if not DisableNotify then
+                    WindUI:Notify({ Title = "Teleport Error", Content = "Could not determine position for " .. targetName, Duration = 3 })
+                end
             end
         else
-            Window:Notify(targetName .. " not found in workspace!", 3)
+            if not DisableNotify then
+                WindUI:Notify({ Title = "Teleport Error", Content = targetName .. " not found in workspace!", Duration = 3 })
+            end
         end
     end
 end
 
-TeleportsSection:AddButton({
-    Title    = "TP to Bank",
-    Content  = "Teleports to the bank folder",
+TeleportsTab:Button({
+    Title = "TP to Bank",
+    Description = "Teleports to the bank folder",
     Callback = function()
         teleportTo("Armchair")
     end,
 })
 
-TeleportsSection:AddButton({
-    Title    = "TP to Charging Station",
-    Content  = "Teleports to the charging station",
+TeleportsTab:Button({
+    Title = "TP to Charging Station",
+    Description = "Teleports to the charging station",
     Callback = function()
         teleportTo("Charger")
     end,
 })
 
-TeleportsSection:AddButton({
-    Title    = "TP to Gas Station",
-    Content  = "Teleports to the gas station",
+TeleportsTab:Button({
+    Title = "TP to Gas Station",
+    Description = "Teleports to the gas station",
     Callback = function()
         teleportTo("Bush1")
     end,
 })
 
-TeleportsSection:AddButton({
-    Title    = "TP to House",
-    Content  = "Teleports to House",
+TeleportsTab:Button({
+    Title = "TP to House",
+    Description = "Teleports to House",
     Callback = function()
         teleportTo("House_04")
     end,
 })
-
-local PlayerTab = Window:CreateTab({ "Player", "" })
-local PlayerSection = PlayerTab:AddSection("Player Modifications", true)
 
 local InfiniteJumpEnabled = false
 local WalkSpeedEnabled = false
@@ -125,10 +125,9 @@ local AntiAFKEnabled = false
 local FlyEnabled = false
 local FlySpeed = 50
 local IsFrozen = false
-
 local AntiFallActive = false
-local DamageEvent = ReplicatedStorage:WaitForChild("Events", 5) and ReplicatedStorage.Events:WaitForChild("Damage", 5)
 
+local DamageEvent = ReplicatedStorage:WaitForChild("Events", 5) and ReplicatedStorage.Events:WaitForChild("Damage", 5)
 if DamageEvent then
     local oldNamecall
     oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
@@ -141,19 +140,19 @@ if DamageEvent then
     end)
 end
 
-PlayerSection:AddToggle({
-    Title    = "Anti Fall Damage",
-    Content  = "Blocks the fall damage remote call automatically",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "Anti Fall Damage",
+    Description = "Blocks the fall damage remote call automatically",
+    Default = false,
     Callback = function(Value)
         AntiFallActive = Value
     end,
 })
 
-PlayerSection:AddToggle({
-    Title    = "Infinite Jump",
-    Content  = "Lompat berkali-kali di udara",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "Infinite Jump",
+    Description = "Lompat berkali-kali di udara",
+    Default = false,
     Callback = function(Value)
         InfiniteJumpEnabled = Value
     end,
@@ -168,43 +167,41 @@ UIS.JumpRequest:Connect(function()
     end
 end)
 
-PlayerSection:AddToggle({
-    Title    = "WalkSpeed Override",
-    Content  = "Mengubah kecepatan jalan",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "WalkSpeed Override",
+    Description = "Mengubah kecepatan jalan",
+    Default = false,
     Callback = function(Value)
         WalkSpeedEnabled = Value
     end,
 })
 
-PlayerSection:AddSlider({
-    Title    = "WalkSpeed Value",
-    Content  = "Atur kecepatan jalan",
-    Min      = 16,
-    Max      = 200,
-    Default  = 16,
-    Increment= 1,
+PlayerTab:Slider({
+    Title = "WalkSpeed Value",
+    Description = "Atur kecepatan jalan",
+    Min = 16,
+    Max = 200,
+    Default = 16,
     Callback = function(Value)
         WalkSpeedVal = Value
     end,
 })
 
-PlayerSection:AddToggle({
-    Title    = "JumpPower Override",
-    Content  = "Mengubah tinggi lompatan",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "JumpPower Override",
+    Description = "Mengubah tinggi lompatan",
+    Default = false,
     Callback = function(Value)
         JumpPowerEnabled = Value
     end,
 })
 
-PlayerSection:AddSlider({
-    Title    = "JumpPower Value",
-    Content  = "Atur tinggi lompat",
-    Min      = 50,
-    Max      = 300,
-    Default  = 50,
-    Increment= 5,
+PlayerTab:Slider({
+    Title = "JumpPower Value",
+    Description = "Atur tinggi lompat",
+    Min = 50,
+    Max = 300,
+    Default = 50,
     Callback = function(Value)
         JumpPowerVal = Value
     end,
@@ -221,10 +218,10 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-PlayerSection:AddToggle({
-    Title    = "NoClip",
-    Content  = "Menembus tembok/objek",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "NoClip",
+    Description = "Menembus tembok/objek",
+    Default = false,
     Callback = function(Value)
         NoClipEnabled = Value
     end,
@@ -240,10 +237,10 @@ RunService.Stepped:Connect(function()
     end
 end)
 
-PlayerSection:AddToggle({
-    Title    = "Anti AFK",
-    Content  = "Mencegah kick karena AFK",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "Anti AFK",
+    Description = "Mencegah kick karena AFK",
+    Default = false,
     Callback = function(Value)
         AntiAFKEnabled = Value
         if Value then
@@ -255,15 +252,14 @@ PlayerSection:AddToggle({
                     vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                 end
             end)
-            Window:Notify("Anti AFK Enabled", 2)
         end
     end,
 })
 
-PlayerSection:AddToggle({
-    Title    = "Fly",
-    Content  = "Terbang dengan pengatur kecepatan (Support Mobile)",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "Fly",
+    Description = "Terbang dengan pengatur kecepatan",
+    Default = false,
     Callback = function(Value)
         FlyEnabled = Value
         local char = LocalPlayer.Character
@@ -273,7 +269,7 @@ PlayerSection:AddToggle({
         
         if FlyEnabled then
             local bv = Instance.new("BodyVelocity")
-            bv.Name = "BearHubFlyVelocity"
+            bv.Name = "PrisonEscapeFlyVelocity"
             bv.Parent = hrp
             bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
             bv.Velocity = Vector3.new(0, 0, 0)
@@ -293,29 +289,28 @@ PlayerSection:AddToggle({
                 if bv then bv:Destroy() end
             end)
         else
-            if hrp:FindFirstChild("BearHubFlyVelocity") then
-                hrp.BearHubFlyVelocity:Destroy()
+            if hrp:FindFirstChild("PrisonEscapeFlyVelocity") then
+                hrp.PrisonEscapeFlyVelocity:Destroy()
             end
         end
     end,
 })
 
-PlayerSection:AddSlider({
-    Title    = "Fly Speed",
-    Content  = "Kecepatan terbang",
-    Min      = 10,
-    Max      = 200,
-    Default  = 50,
-    Increment = 5,
+PlayerTab:Slider({
+    Title = "Fly Speed",
+    Description = "Kecepatan terbang",
+    Min = 10,
+    Max = 200,
+    Default = 50,
     Callback = function(Value)
         FlySpeed = Value
     end,
 })
 
-PlayerSection:AddToggle({
-    Title    = "Freeze Character",
-    Content  = "Menghentikan posisi karakter (Utility)",
-    Default  = false,
+PlayerTab:Toggle({
+    Title = "Freeze Character",
+    Description = "Menghentikan posisi karakter",
+    Default = false,
     Callback = function(Value)
         IsFrozen = Value
         local char = LocalPlayer.Character
@@ -324,9 +319,6 @@ PlayerSection:AddToggle({
         end
     end,
 })
-
-local VisualTab = Window:CreateTab({ "Visual", "" })
-local VisualSection = VisualTab:AddSection("ESP & Visual Options", true)
 
 local EspTeamActive = false
 local EspAtmActive = false
@@ -346,10 +338,10 @@ local oldLighting = {
     OutdoorAmbient = Lighting.OutdoorAmbient
 }
 
-VisualSection:AddToggle({
-    Title    = "Fullbright / Night Vision",
-    Content  = "Menerangi seluruh map yang gelap",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "Fullbright / Night Vision",
+    Description = "Menerangi seluruh map yang gelap",
+    Default = false,
     Callback = function(Value)
         FullbrightActive = Value
         if Value then
@@ -368,46 +360,46 @@ VisualSection:AddToggle({
     end,
 })
 
-VisualSection:AddToggle({
-    Title    = "ESP Team / Name",
-    Content  = "Displays player names colored by team with distance [32m]",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "ESP Team / Name",
+    Description = "Displays player names colored by team with distance",
+    Default = false,
     Callback = function(Value)
         EspTeamActive = Value
     end,
 })
 
-VisualSection:AddToggle({
-    Title    = "ESP Box",
-    Content  = "Kotak di sekitar player",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "ESP Box",
+    Description = "Kotak di sekitar player",
+    Default = false,
     Callback = function(Value)
         EspBoxActive = Value
     end,
 })
 
-VisualSection:AddToggle({
-    Title    = "ESP Health",
-    Content  = "Menampilkan bar/angka HP",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "ESP Health",
+    Description = "Menampilkan bar/angka HP",
+    Default = false,
     Callback = function(Value)
         EspHealthActive = Value
     end,
 })
 
-VisualSection:AddToggle({
-    Title    = "Tracer",
-    Content  = "Garis dari layar ke player",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "Tracer",
+    Description = "Garis dari layar ke player",
+    Default = false,
     Callback = function(Value)
         TracerActive = Value
     end,
 })
 
-VisualSection:AddToggle({
-    Title    = "ESP ATM",
-    Content  = "ATM Distance ESP & highlights",
-    Default  = false,
+VisualTab:Toggle({
+    Title = "ESP ATM",
+    Description = "ATM Distance ESP & highlights",
+    Default = false,
     Callback = function(Value)
         EspAtmActive = Value
     end,
@@ -415,7 +407,7 @@ VisualSection:AddToggle({
 
 task.spawn(function()
     while true do
-        task.wait(2) -- Auto-refresh interval 2 seconds
+        task.wait(2)
         if EspAtmActive then
             for _, gui in pairs(activeAtmTags) do
                 if gui.Gui then gui.Gui:Destroy() end
@@ -437,7 +429,7 @@ RunService.RenderStepped:Connect(function()
             if EspTeamActive and head and root and myRoot then
                 if not activeNameTags[player] then
                     local bb = Instance.new("BillboardGui")
-                    bb.Name = "BearHubESPName"
+                    bb.Name = "PrisonEscapeESPName"
                     bb.Size = UDim2.new(0, 200, 0, 50)
                     bb.StudsOffset = Vector3.new(0, 2.5, 0)
                     bb.AlwaysOnTop = true
@@ -496,17 +488,14 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-local InteractTab = Window:CreateTab({ "Interact", "" })
-local InteractSection = InteractTab:AddSection("Interaction Settings", true)
-
 local InstantInteractActive = false
 local AutoInteractActive = false
 local AutoInteractRadius = 10
 
-InteractSection:AddToggle({
-    Title    = "Instant Interact",
-    Content  = "Sets ProximityPrompt hold duration to 0",
-    Default  = false,
+InteractTab:Toggle({
+    Title = "Instant Interact",
+    Description = "Sets ProximityPrompt hold duration to 0",
+    Default = false,
     Callback = function(Value)
         InstantInteractActive = Value
         task.spawn(function()
@@ -522,22 +511,21 @@ InteractSection:AddToggle({
     end,
 })
 
-InteractSection:AddToggle({
-    Title    = "Auto Interact",
-    Content  = "Automatically triggers proximity prompts in range",
-    Default  = false,
+InteractTab:Toggle({
+    Title = "Auto Interact",
+    Description = "Automatically triggers proximity prompts in range",
+    Default = false,
     Callback = function(Value)
         AutoInteractActive = Value
     end,
 })
 
-InteractSection:AddSlider({
-    Title    = "Radius Auto Interact",
-    Content  = "Set range for automatic prompt triggering",
-    Min      = 10,
-    Max      = 35,
-    Default  = 10,
-    Increment= 1,
+InteractTab:Slider({
+    Title = "Radius Auto Interact",
+    Description = "Set range for automatic prompt triggering",
+    Min = 10,
+    Max = 35,
+    Default = 10,
     Callback = function(Value)
         AutoInteractRadius = Value
     end,
@@ -559,18 +547,13 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-local AimbotTab = Window:CreateTab({ "Aimbot", "" })
-local AimbotSection = AimbotTab:AddSection("Aimbot Settings", true)
-
 local AimbotEnabled = false
 local AntiTeam = true
 local AntiWall = true
 local UseFOV = true
-local TargetStun = true
 local FOVRadius = 80
 local Smoothness = 0.10
 local TargetPart = "Head"
-local MaxDistance = 10
 local PredictionActive = false
 local TargetPriority = "closest" 
 local TargetLockActive = false
@@ -674,59 +657,55 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-AimbotSection:AddToggle({
-    Title    = "Aimbot Active",
-    Content  = "Enables core aimbot",
-    Default  = false,
+AimbotTab:Toggle({
+    Title = "Aimbot Active",
+    Description = "Enables core aimbot",
+    Default = false,
     Callback = function(Value) AimbotEnabled = Value end,
 })
 
-AimbotSection:AddToggle({
-    Title    = "Prediction",
-    Content  = "Prediksi pergerakan target",
-    Default  = false,
+AimbotTab:Toggle({
+    Title = "Prediction",
+    Description = "Prediksi pergerakan target",
+    Default = false,
     Callback = function(Value) PredictionActive = Value end,
 })
 
-AimbotSection:AddToggle({
-    Title    = "Target Lock",
-    Content  = "Mengunci target agar tidak mudah pindah",
-    Default  = false,
+AimbotTab:Toggle({
+    Title = "Target Lock",
+    Description = "Mengunci target agar tidak mudah pindah",
+    Default = false,
     Callback = function(Value) TargetLockActive = Value end,
 })
 
-AimbotSection:AddToggle({
-    Title    = "Anti Team",
-    Content  = "Abaikan rekan satu tim",
-    Default  = true,
+AimbotTab:Toggle({
+    Title = "Anti Team",
+    Description = "Abaikan rekan satu tim",
+    Default = true,
     Callback = function(Value) AntiTeam = Value end,
 })
 
-AimbotSection:AddToggle({
-    Title    = "Wall Check",
-    Content  = "Cek tembok",
-    Default  = true,
+AimbotTab:Toggle({
+    Title = "Wall Check",
+    Description = "Cek tembok",
+    Default = true,
     Callback = function(Value) AntiWall = Value end,
 })
 
-AimbotSection:AddSlider({
-    Title    = "FOV Size",
-    Content  = "Dynamic FOV radius",
-    Min      = 20,
-    Max      = 350,
-    Default  = 80,
-    Increment= 1,
+AimbotTab:Slider({
+    Title = "FOV Size",
+    Description = "Dynamic FOV radius",
+    Min = 20,
+    Max = 350,
+    Default = 80,
     Callback = function(Value) FOVRadius = Value end,
 })
 
-local UtilityTab = Window:CreateTab({ "Utility", "" })
-local UtilitySection = UtilityTab:AddSection("Server & Performance", true)
-
-UtilitySection:AddButton({
-    Title    = "Server Hop",
-    Content  = "Pindah ke server lain secara acak",
+UtilityTab:Button({
+    Title = "Server Hop",
+    Description = "Pindah ke server lain secara acak",
     Callback = function()
-        Window:Notify("Searching for another server...", 2)
+        WindUI:Notify({ Title = "Server", Content = "Searching for another server...", Duration = 2 })
         local servers = {}
         local req = game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
         local data = HttpService:JSONDecode(req)
@@ -738,33 +717,33 @@ UtilitySection:AddButton({
         if #servers > 0 then
             TeleportService:TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)], LocalPlayer)
         else
-            Window:Notify("No available servers found!", 3)
+            WindUI:Notify({ Title = "Server Error", Content = "No available servers found!", Duration = 3 })
         end
     end,
 })
 
-UtilitySection:AddButton({
-    Title    = "Rejoin Server",
-    Content  = "Bergabung kembali ke server saat ini",
+UtilityTab:Button({
+    Title = "Rejoin Server",
+    Description = "Bergabung kembali ke server saat ini",
     Callback = function()
         TeleportService:Teleport(game.PlaceId, LocalPlayer)
     end,
 })
 
-UtilitySection:AddButton({
-    Title    = "Server Info / JobId",
-    Content  = "Menampilkan JobId & Player count",
+UtilityTab:Button({
+    Title = "Server Info / JobId",
+    Description = "Menampilkan JobId & Player count",
     Callback = function()
         local info = string.format("JobId: %s\nPlayers: %d/%d", game.JobId, #Players:GetPlayers(), Players.MaxPlayers)
         print(info)
-        Window:Notify("Copied / Printed Server Info!", 3)
+        WindUI:Notify({ Title = "Server Info", Content = "Printed to console/F9", Duration = 3 })
     end,
 })
 
-UtilitySection:AddToggle({
-    Title    = "FPS Boost",
-    Content  = "Disable particles, lower effects & rendering details",
-    Default  = false,
+UtilityTab:Toggle({
+    Title = "FPS Boost",
+    Description = "Disable particles, lower effects & rendering details",
+    Default = false,
     Callback = function(Value)
         if Value then
             for _, v in ipairs(Workspace:GetDescendants()) do
@@ -773,26 +752,22 @@ UtilitySection:AddToggle({
                 end
             end
             Lighting.GlobalShadows = false
-            Window:Notify("FPS Boost Enabled", 2)
+            WindUI:Notify({ Title = "FPS Boost", Content = "FPS Boost Enabled", Duration = 2 })
         else
-            Window:Notify("FPS Boost Disabled", 2)
+            WindUI:Notify({ Title = "FPS Boost", Content = "FPS Boost Disabled", Duration = 2 })
         end
     end,
 })
 
-local AutoFarmTab = Window:CreateTab({ "Auto Farm", "" })
-local AutoFarmSection = AutoFarmTab:AddSection("Automated Farming", true)
-
 local AutoFarmEnabled = false
 
--- FIXED: Protect AutoFarm ScreenGui from deleting or failing on character respawn
 local AutoFarmGui = Instance.new("ScreenGui")
-AutoFarmGui.Name = "BearHubAutoFarmScreen"
+AutoFarmGui.Name = "PrisonEscapeAutoFarmScreen"
 AutoFarmGui.IgnoreGuiInset = true
-AutoFarmGui.ResetOnSpawn = false -- <-- PENTING: Mencegah GUI ter-reset saat mati
+AutoFarmGui.ResetOnSpawn = false
 AutoFarmGui.Enabled = false
 pcall(function()
-    AutoFarmGui.Parent = CoreGui -- Lebih aman ditaruh di CoreGui agar tidak ikut terhapus PlayerGui reset
+    AutoFarmGui.Parent = CoreGui
 end)
 if not AutoFarmGui.Parent then
     AutoFarmGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
@@ -814,7 +789,7 @@ TextContainer.Padding = UDim.new(0, 10)
 local FarmTextLabel = Instance.new("TextLabel")
 FarmTextLabel.Size = UDim2.new(0, 500, 0, 50)
 FarmTextLabel.BackgroundTransparency = 1
-FarmTextLabel.Text = "Bear Hub Auto Farm"
+FarmTextLabel.Text = "Prison Escape Auto Farm"
 FarmTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 FarmTextLabel.TextSize = 36
 FarmTextLabel.Font = Enum.Font.GothamBold
@@ -829,10 +804,10 @@ RejoinTextLabel.TextSize = 22
 RejoinTextLabel.Font = Enum.Font.GothamBold
 RejoinTextLabel.Parent = BlackBackground
 
-AutoFarmSection:AddToggle({
-    Title    = "Auto Farm",
-    Content  = "Automatically teleports to ATMs and interacts with prompts",
-    Default  = false,
+AutoFarmTab:Toggle({
+    Title = "Auto Farm",
+    Description = "Automatically teleports to ATMs and interacts with prompts",
+    Default = false,
     Callback = function(Value)
         AutoFarmEnabled = Value
         AutoFarmGui.Enabled = Value
@@ -863,4 +838,24 @@ task.spawn(function()
             end
         end
     end
+end)
+
+local function ProtectWindUi()
+    pcall(function()
+        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+        if playerGui then
+            for _, gui in ipairs(playerGui:GetChildren()) do
+                if gui:IsA("ScreenGui") and (gui.Name:find("WindUI") or gui.Name:find("Prison") or gui:FindFirstChildWhichIsA("Frame", true)) then
+                    gui.ResetOnSpawn = false
+                end
+            end
+        end
+    end)
+end
+
+ProtectWindUi()
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    ProtectWindUi()
 end)
