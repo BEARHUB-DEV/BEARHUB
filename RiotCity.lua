@@ -21,7 +21,7 @@ local Window = Library:CreateWindow({
     Description    = "v2.1 Pro Optimized",
     isVerified     = true,
     OpenCloseImage = "92530824918913",
-    Icon           = "rbxthumb://type=Asset&id=139365761909290&w=420&h=420",
+    Icon           = "rbxthumb://type=Asset&id=130008176530837&w=420&h=420",
     Keybind        = Enum.KeyCode.RightControl,
     SizeUi         = UDim2.fromOffset(500, 340),
     Tags           = { "Beta", "OP" },
@@ -415,7 +415,7 @@ VisualSection:AddToggle({
 
 task.spawn(function()
     while true do
-        task.wait(2)
+        task.wait(2) -- Auto-refresh interval 2 seconds
         if EspAtmActive then
             for _, gui in pairs(activeAtmTags) do
                 if gui.Gui then gui.Gui:Destroy() end
@@ -785,12 +785,18 @@ local AutoFarmSection = AutoFarmTab:AddSection("Automated Farming", true)
 
 local AutoFarmEnabled = false
 
+-- FIXED: Protect AutoFarm ScreenGui from deleting or failing on character respawn
 local AutoFarmGui = Instance.new("ScreenGui")
 AutoFarmGui.Name = "BearHubAutoFarmScreen"
 AutoFarmGui.IgnoreGuiInset = true
-AutoFarmGui.ResetOnSpawn = false
+AutoFarmGui.ResetOnSpawn = false -- <-- PENTING: Mencegah GUI ter-reset saat mati
 AutoFarmGui.Enabled = false
-AutoFarmGui.Parent = CoreGui
+pcall(function()
+    AutoFarmGui.Parent = CoreGui -- Lebih aman ditaruh di CoreGui agar tidak ikut terhapus PlayerGui reset
+end)
+if not AutoFarmGui.Parent then
+    AutoFarmGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
 
 local BlackBackground = Instance.new("Frame")
 BlackBackground.Size = UDim2.new(1, 0, 1, 0)
