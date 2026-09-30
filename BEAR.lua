@@ -6,6 +6,7 @@ local games = {
     [4789047554] = 'prisonescapev2.lua',
     [126016859830524] = 'StealAEggBrainrot.lua',
     [128168754563448] = 'SwatSimulator.lua',
+    [113745337705295] = 'RiotCity.lua'
 }
 
 if identifyexecutor then
