@@ -1,4 +1,4 @@
--- Bear Hub, yang nyolong gapunya keturunan
+-- yang nyolong gabisa punya keturunan
 local Library = loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/aboutsibah113/Library/refs/heads/main/Sibah2xZcu_Library.lua?v=2"
 ))()
@@ -21,7 +21,7 @@ local Window = Library:CreateWindow({
     Description    = "v2.1 Pro Optimized",
     isVerified     = true,
     OpenCloseImage = "92530824918913",
-    Icon           = "rbxthumb://type=Asset&id=130008176530837&w=420&h=420",
+    Icon           = "rbxthumb://type=Asset&id=139365761909290&w=420&h=420",
     Keybind        = Enum.KeyCode.RightControl,
     SizeUi         = UDim2.fromOffset(500, 340),
     Tags           = { "Beta", "OP" },
@@ -334,13 +334,9 @@ local EspBoxActive = false
 local EspHealthActive = false
 local TracerActive = false
 local FullbrightActive = false
-local ObjectFinderQuery = ""
 
 local activeNameTags = {}
 local activeAtmTags = {}
-local activeBoxes = {}
-local activeTracers = {}
-local activeHealthBars = {}
 
 local oldLighting = {
     Brightness = Lighting.Brightness,
@@ -417,6 +413,18 @@ VisualSection:AddToggle({
     end,
 })
 
+task.spawn(function()
+    while true do
+        task.wait(2)
+        if EspAtmActive then
+            for _, gui in pairs(activeAtmTags) do
+                if gui.Gui then gui.Gui:Destroy() end
+            end
+            activeAtmTags = {}
+        end
+    end
+end)
+
 RunService.RenderStepped:Connect(function()
     local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     
@@ -424,7 +432,6 @@ RunService.RenderStepped:Connect(function()
         if player ~= LocalPlayer then
             local char = player.Character
             local head = char and char:FindFirstChild("Head")
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
             local root = char and char:FindFirstChild("HumanoidRootPart")
             
             if EspTeamActive and head and root and myRoot then
