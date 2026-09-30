@@ -21,7 +21,7 @@ local Window = Library:CreateWindow({
     Description    = "v2.1 Pro Optimized",
     isVerified     = true,
     OpenCloseImage = "92530824918913",
-    Icon           = "rbxthumb://type=Asset&id=130008176530837&w=420&h=420",
+    Icon           = "rbxthumb://type=Asset&id=139365761909290&w=420&h=420",
     Keybind        = Enum.KeyCode.RightControl,
     SizeUi         = UDim2.fromOffset(500, 340),
     Tags           = { "Beta", "OP" },
